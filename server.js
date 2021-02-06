@@ -30,9 +30,10 @@ app.get('/api/candidates', (req, res) => {
     const params = [];
     db.all(sql, params, (err, rows) => {
         if (err) {
-            res.status(500).json({error: err.message });
+            res.status(500).json( {error: err.message });
             return;
         }
+
         res.json({
             message: 'success',
             data: rows
@@ -43,7 +44,7 @@ app.get('/api/candidates', (req, res) => {
 // Get a single candidate
 app.get('/api/candidate/:id', (req, res) => {
     const sql = `SELECT * FROM candidates
-        WHERE id = ?`;
+                    WHERE id = ?`;
     const params = [req.params.id];
     db.get(sql, params, (err, row) => {
         if (err) {
@@ -81,10 +82,20 @@ app.post('/api/candidate/', ({ body }, res) => {
         res.status(400).json({ error: errors });
         return;
     }
-    res.json({
-        message: 'success',
-        data: body,
-        id: this.lastID
+
+    const sql = `INSERT INTO candidates (first_name, last_name, industry_connected)
+                    VALUES (?,?,?)`;
+    const params = [body.first_name, body.last_name, body.industry_connected];
+    db.run(sql, params, function(err, result) {
+        if (err) {
+            res.status(400).json({ error: err.message });
+            return;
+        }
+        res.json({
+            message: 'success',
+            data: body,
+            id: this.lastID
+        });
     });
 });
 
