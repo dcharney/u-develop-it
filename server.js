@@ -5,11 +5,12 @@ const PORT = process.env.PORT || 3001;
 const app = express();
 
 const apiRoutes = require('./routes/apiRoutes');
-app.use('/api', apiRoutes);
 
 // express middleware
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+
+app.use('/api', apiRoutes);
 
 // Default response for any other request(Not Found) Catch all
 app.use((req, res) => {
